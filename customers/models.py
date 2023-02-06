@@ -1,14 +1,16 @@
 import base64
+import datetime
+import threading
 import uuid
-from datetime import timedelta
 from django.db import models
 from django.contrib.auth.models import User
-from django.utils.timezone import now
 from django.utils.crypto import get_random_string
 from django_cryptography.fields import encrypt
 from django.utils.translation import ugettext_lazy as _
 
-from support.functions import encrypt_string, decrypt_string, reencrypt_string
+from passtore.settings import TESTING
+from support.functions import encrypt_string, decrypt_string, reencrypt_string, get_expire_time_code
+from support.emails import send_email
 
 
 class Customer(User):
@@ -18,6 +20,13 @@ class Customer(User):
     test_passwd = encrypt(models.TextField('Test passwd', blank=True, null=True))
     secret_key = models.CharField(max_length=88, db_index=True, blank=True, null=True)
     uuid = models.CharField('UUID', max_length=36, null=True, blank=True)
+
+    def get_master_key(self):
+        # This only works for numbers between 0 and 999999
+        for master_key in range(1000000):
+            if self.validate_master_key(master_key):
+                return master_key
+        return None
 
     @staticmethod
     def refresh_secret_key():
@@ -50,6 +59,15 @@ class Customer(User):
             passwd.available = True  # Restore passwd availability
             passwd.save()
 
+    def notify_registration(self):
+        send_email(
+            app=self._meta.app_label,
+            template="registration",
+            subject="Se ha registrado correctamente",
+            context={},
+            target=self.email,
+        )
+
     def save(self, master_key=None, *args, **kwargs):
         creating = False
         if self._state.adding:
@@ -59,33 +77,46 @@ class Customer(User):
             self.uuid = uuid.uuid4().__str__()
             self.test_passwd = encrypt_string(get_random_string(12), master_key)
             self.secret_key = self.refresh_secret_key()
+            # Don't notify customer creation when testing
+            if not TESTING:
+                self.notify_registration()
         super(Customer, self).save(*args, **kwargs)
         if creating:
             ApiKey.objects.create(customer=self)
 
 
-def generate_code():
-    code = str(uuid.uuid4().int)[:6]
-    while RecoverCode.objects.filter(code=code):
-        code = str(uuid.uuid4().int)[:6]
-    return code
-
-
-def get_expire_time_code():
-    return now() + timedelta(minutes=5)
-
-
 class RecoverCode(models.Model):
-    code = models.CharField(max_length=6, default=generate_code, verbose_name=_("recover code"))
-    email = models.EmailField(verbose_name=_("email address"))
-    expire = models.DateTimeField(default=get_expire_time_code, verbose_name=_("expire datetime"))
-
-    class Meta:
-        verbose_name = "Recover Code"
-        verbose_name_plural = "Recover Codes"
+    code = models.CharField(max_length=6)
+    email = models.EmailField()
+    expire = models.DateTimeField()
 
     def __str__(self):
         return self.code
+
+    @classmethod
+    def delete_expired_codes(cls):
+        cls.objects.filter(expire__lt=datetime.datetime.utcnow()).delete()
+
+    @classmethod
+    def generate_code(cls):
+        # Delete expired_codes
+        thread = threading.Thread(
+            target=cls.delete_expired_codes,
+            args=(),
+        )
+        thread.start()
+        # Generate and return new, unused code
+        while True:
+            code = str(uuid.uuid4().int)[:6]
+            if not RecoverCode.objects.filter(code=code):
+                break
+        return code
+
+    def save(self, *args, **kwargs):
+        if self._state.adding:
+            self.code = self.generate_code()
+            self.expire = get_expire_time_code()
+        super(RecoverCode, self).save(*args, **kwargs)
 
 
 class ApiKey(models.Model):

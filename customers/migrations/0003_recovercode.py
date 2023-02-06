@@ -15,13 +15,9 @@ class Migration(migrations.Migration):
             name='RecoverCode',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(default=customers.models.generate_code, max_length=6, verbose_name='recover code')),
-                ('email', models.EmailField(max_length=254, verbose_name='email address')),
-                ('expire', models.DateTimeField(default=customers.models.get_expire_time_code, verbose_name='expire datetime')),
+                ('code', models.CharField(max_length=6)),
+                ('email', models.EmailField(max_length=254)),
+                ('expire', models.DateTimeField()),
             ],
-            options={
-                'verbose_name': 'Recover Code',
-                'verbose_name_plural': 'Recover Codes',
-            },
         ),
     ]
