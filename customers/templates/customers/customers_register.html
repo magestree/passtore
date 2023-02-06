@@ -1,21 +1,24 @@
 {% extends 'store/store_base.html' %}
-{% block tab_title %}Register{% endblock tab_title %}
+{% load i18n %}
+{% block tab_title %}{% trans "Register" %}{% endblock tab_title %}
 {% block content %}
-    <form class="px-4 py-3" method="post">
+    {% include "store/includes/store_message.html" %}
+    <form class="py-3" method="post">
         {% csrf_token %}
         <div class="mb-3">
-            <label class="form-label" for="input_email">Correo electrónico</label>
-            <input type="email" class="form-control" name="email" id="input_email" placeholder="email@example.com" required>
+            <label class="form-label" for="input_email">{% trans "Email address" %}</label>
+            <input type="email" class="form-control" name="email" id="input_email" required>
         </div>
         <div class="mb-3">
-            <label class="form-label" for="input_password">Contraseña</label>
-            <input type="password" class="form-control" name="password" id="input_password" placeholder="Password" required>
+            <label class="form-label" for="input_password">{% trans "Password" %}</label>
+            <input type="password" class="form-control" name="password" id="input_password" required>
         </div>
         <div class="mb-3">
-            <label class="form-label" for="input_master_key">PIN seguridad</label>
-            <input type="number" class="form-control" step="1" min="100000" max="999999" name="master_key" id="input_master_key" required placeholder="PIN">
+            <label class="form-label" for="input_master_key">{% trans "Master key" %}</label>
+            <input type="text" class="form-control" name="master_key" id="input_master_key" required>
         </div>
         <input type="submit" class="btn btn-primary" value="Registrarse">
-        <a class="btn" href="{% url 'customers_login' %}">Entrar</a>
     </form>
+    <hr>
+    <a class="btn" href="{% url 'customers_login' %}">Entrar</a>
 {% endblock content %}

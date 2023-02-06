@@ -1,4 +1,5 @@
 import binascii
+import datetime
 import hashlib
 import logging
 
@@ -104,3 +105,7 @@ def fernet_decrypt_string(encrypted_string):
         if decrypted_string:
             return decrypted_string
     return decrypted_string
+
+
+def get_expire_time_code():
+    return datetime.datetime.utcnow() + datetime.timedelta(minutes=5)
