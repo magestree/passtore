@@ -1,40 +1,40 @@
 {% extends 'store/store_base.html' %}
-{% block tab_title %}Profile{% endblock tab_title %}
+{% load i18n %}
+{% block tab_title %}{% trans "Profile" %}{% endblock tab_title %}
 {% block content %}
-    <form class="px-4 py-3" method="post">
+    {% include "store/includes/store_message.html" %}
+    <form class="py-3" method="post">
         {% csrf_token %}
         <div class="mb-3">
-        <label class="form-label" for="input_email">Email</label>
+        <label class="form-label" for="input_email">{% trans "Email address" %}</label>
         <input type="email" class="form-control" name="email" id="input_email" value="{{ email }}" required>
         </div>
 
         <input type="hidden" name="update_customer_data" value="">
-        <button type="submit" class="btn btn-primary">Actualizar datos</button>
+        <button type="submit" class="btn btn-primary">{% trans "Update" %}</button>
     </form>
     <hr>
-    <form class="px-4 py-3" method="post">
+    <form class="py-3" method="post">
         {% csrf_token %}
         <div class="mb-3">
-        <label class="form-label" for="input_current_password">Password actual</label>
+        <label class="form-label" for="input_current_password">{% trans "Current password" %}</label>
         <input type="password" class="form-control" name="current_password" id="input_current_password" required>
         </div>
         <div class="mb-3">
-        <label class="form-label" for="input_new_password">Nuevo password</label>
+        <label class="form-label" for="input_new_password">{% trans "New password" %}</label>
         <input type="password" class="form-control" name="new_password" id="input_new_password" required>
         </div>
         <input type="hidden" name="update_password" value="">
-        <button type="submit" class="btn btn-primary">Cambiar contraseña</button>
+        <button type="submit" class="btn btn-primary">{% trans "Change password" %}</button>
     </form>
     <hr>
-    <form class="px-4 py-3" method="post">
+    <form class="py-3" method="post">
         {% csrf_token %}
         <div class="mb-3">
-            <label class="form-label" for="input_master_key">Nuevo PIN</label>
-            <input type="number" class="form-control" max="999999" min="100000" name="master_key" id="input_master_key">
+            <label class="form-label" for="input_master_key">{% trans "New master key" %}</label>
+            <input type="text" class="form-control" name="master_key" id="input_master_key" required>
         </div>
-
         <input type="hidden" name="update_master_key" value="">
-        <button type="submit" class="btn btn-primary">Cambiar PIN de seguridad</button>
+        <button type="submit" class="btn btn-primary">{% trans "Change master key" %}</button>
     </form>
-
 {% endblock content %}

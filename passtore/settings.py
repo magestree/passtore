@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
+import sys
 from pathlib import Path
 
 from django.urls import reverse_lazy
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'api',
     'customers',
     'store',
 ]
@@ -121,6 +123,9 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+
+TESTING = 'test' in sys.argv[0]
 
 
 # Static files (CSS, JavaScript, Images)
