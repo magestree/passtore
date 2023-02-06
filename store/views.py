@@ -1,6 +1,5 @@
 import json
 
-# from django.core import serializers
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -8,10 +7,9 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.utils.crypto import get_random_string
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.status import HTTP_201_CREATED
 import requests
 
-from customers.views import get_session_customer
+from customers.views import get_session_customer, check_session_message
 from passtore.settings import LOGIN_URL
 from store.models import Passwd, SharedPasswd, Identifier, Container, FernetKey
 from support.functions import encrypt_string, decrypt_string, reencrypt_string
@@ -23,17 +21,6 @@ def build_url(request, url_name):
     tail = reverse_lazy(url_name)
     api_url = f'{host}{tail}'
     return api_url
-
-
-def check_session_message(request):
-    """returns (if exists) any message and its class style stored in current request session."""
-    if 'message' in request.session and 'class_alert' in request.session:
-        message, class_alert = request.session.get('message'), request.session.get('class_alert')
-        del request.session['message']
-        del request.session['class_alert']
-        return message, class_alert
-    else:
-        return None, None
 
 
 def get_pagination_dict(request, iterable):
@@ -131,7 +118,7 @@ def store_add_passwd(request):
             )
             response_dict = json.loads(response.content)
             message = response_dict["message"]
-            if response.status_code == HTTP_201_CREATED:
+            if response.status_code == 201:
                 if response_dict["success"]:
                     request.session["message"] = f"Passwd successfully created. {message}"
                     request.session["class_alert"] = SUCCESS_MESSAGE
