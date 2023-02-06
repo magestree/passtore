@@ -1,0 +1,105 @@
+{% extends 'store/store_base.html' %}
+{% load static %}
+{% load i18n %}
+{% block tab_title %}{% trans "Ver contraseñas" %}{% endblock tab_title %}
+{% block content %}
+    <!--begin::Message-->
+    {% include 'store/includes/store_message.html' %}
+    <!--end::Message-->
+
+    <!-- Filter form -->
+    {% include "store/includes/store_view_passwds/filter_form.html" %}
+    <!-- End filter form -->
+
+    <!-- Filter form -->
+    {% include "store/includes/store_view_passwds/passwds_table.html" %}
+    <!-- End filter form -->
+
+    <!-- Modals -->
+    {% include "store/includes/store_view_passwds/modals/reveal_passwd.html" %}
+    {% include "store/includes/store_view_passwds/modals/delete_passwd.html" %}
+    <!-- End modals -->
+
+    <!-- Pagination -->
+    {% include "store/includes/store_pagination.html" %}
+    <!-- End pagination -->
+
+{% endblock content %}
+
+{% block custom_script %}
+    <script type="text/javascript">
+
+        // COPY PASSWORD TO CLIPBOARD WITHOUT REVEAL
+        function copy_password_without_reveal(uuid) {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'store_reveal_passwd' %}",
+                data: {
+                    'uuid': uuid ,
+                    'master_key': {{ request.session.master_key }}
+                },
+                success: function (response) {
+                    let passwd_value = response.value.toString();
+                    if(passwd_value) {
+                        // Copy passwd to Clipboard
+                        navigator.clipboard.writeText(passwd_value);
+                    }
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            });
+        }
+
+        // REVEAL PASSWORD
+        function reveal_passwd(uuid) {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'store_reveal_passwd' %}",
+                data: {
+                    'uuid': uuid ,
+                    'master_key': {{ request.session.master_key }}
+                },
+                success: function (response) {
+                    let passwd_value = response.value.toString();
+                    if(passwd_value) {
+                        var modal_div = $('div#reveal-passwd-'+uuid+'-modal');
+                        var passwd_span = $('#_'+uuid+'-value');
+                        let seconds = 10;
+                        // Show password
+                        passwd_span.text(passwd_value);
+                        // Wait 10 seconds... then hide passwd and close modal
+                        setTimeout(function() {
+                            // clean passwd
+                            passwd_span.text("");
+                            modal_div.modal('hide');
+                        }, seconds * 1000);
+                    }
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            });
+        }
+
+        // COPY PASSWORD TO CLIPBOARD AFTER REVEAL
+        function copy_passwd_after_reveal(uuid) {
+            // Define variables
+            let modal_div = $('div#reveal-passwd-' + uuid + '-modal');
+            let passwd_span = $('span#_' + uuid + '-value');
+            let passwd = passwd_span.text();
+            let copy_button = $('button#' + uuid + '-copy-button')
+            // Copy passwd to Clipboard
+            navigator.clipboard.writeText(passwd);
+            // Update button text
+            copy_button.text("Copied!");
+            // Close modal after 0.5 second
+            setTimeout(function () {
+                // clean passwd
+                passwd_span.text("");
+                modal_div.modal('hide');
+            }, 500);
+        }
+    </script>
+
+{% endblock custom_script %}

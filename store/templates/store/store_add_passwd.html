@@ -1,0 +1,19 @@
+{% extends 'store/store_base.html' %}
+{% load i18n %}
+{% block tab_title %}{% trans "Add Password" %}{% endblock tab_title %}
+{% block content %}
+    <!--begin::Message-->
+    {% include 'store/includes/store_message.html' %}
+    <!--end::Message-->
+
+    <!--begin::Forms-->
+    {% include 'store/includes/store_add_passwd/add_passwd_form.html' %}
+    {% include 'store/includes/store_add_passwd/upload_passwds_form.html' %}
+    <!--end::Forms-->
+{% endblock content %}
+
+{% block custom_script %}
+    <!--begin::Scripts-->
+    {% include 'store/includes/store_identifiers_rows.html' %}
+    <!--end::Scripts-->
+{% endblock custom_script %}

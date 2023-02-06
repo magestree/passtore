@@ -1,0 +1,48 @@
+{% load i18n %}
+
+<h4>{% trans "Shared with me" %}</h4>
+<table class="table">
+    <thead>
+        <tr>
+            <th>{% trans "URL" %}</th>
+            <th>{% trans "Identifiers" %}</th>
+            <th>{% trans "Shared by" %}</th>
+            <th>{% trans "Options" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for shared_passwd in shared_passwds %}
+        <tr>
+            <td>{% if shared_passwd.passwd.website %}<a href="{{ shared_passwd.passwd.url }}">{{ shared_passwd.passwd.url }}</a>{% else %}{{ shared_passwd.passwd.url }}{% endif %}</td>
+            <td>
+                {% for identifier in shared_passwd.passwd.identifier_set.all %}
+                    {{ identifier.key }}: {{ identifier.value }}<br>
+                {% endfor %}
+            </td>
+            <td>{{ shared_passwd.passwd.customer.email }}</td>
+            <td>
+                <div class="dropdown text-center">
+                    <a href="javascript:" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-list-dots"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% if shared_passwd.accepted %}
+                        <li>
+                            <a href="javascript:" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#reveal-shared-passwd-{{ shared_passwd.uuid }}-modal" id="{{ shared_passwd.uuid }}-show" onclick="reveal_passwd('{{ shared_passwd.uuid }}');">{% trans "Reveal" %}</a>
+                            <a class="dropdown-item" href="{% url "store_copy_shared_passwd" shared_passwd.uuid %}">{% trans "Copy for me" %}</a>
+                        </li>
+                        {% else %}
+                        <li>
+                            <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#accept-shared-passwd-{{ shared_passwd.uuid }}-modal">{% trans "Validate secret code" %}</a>
+                        </li>
+                        {% endif %}
+                        <li>
+                            <a href="#" class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#delete-shared-passwd-{{ shared_passwd.id }}-modal">{% trans "Delete" %}</a>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

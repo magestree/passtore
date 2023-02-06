@@ -1,0 +1,18 @@
+{% extends 'store/store_base.html' %}
+{% block tab_title %}Nuevo Password{% endblock tab_title %}
+{% block content %}
+    <form class="px-4 py-3" method="post" action="{% url 'customers_set_password_recover' %}">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="input_password" class="form-label">Password</label>
+            <input type="password" class="form-control" name="password" id="input_password" placeholder="Password">
+        </div>
+        <div class="mb-3">
+            <label for="input_password_2" class="form-label">Password</label>
+            <input type="password" class="form-control" name="password2" id="input_password2" placeholder="Password Confirm" >
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a class="btn" href="{% url 'customers_login' %}">Cancelar</a>
+    </form>
+
+{% endblock content %}

@@ -1,0 +1,21 @@
+{% load i18n %}
+{% for sharing_passwd in sharing_passwds %}
+    <div class="modal fade" id="delete-sharing-passwd-{{ sharing_passwd.id }}-modal" tabindex="-1" aria-labelledby="delete-sharing-passwd-{{ sharing_passwd.id }}-modal-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="delete-sharing-passwd-{{ sharing_passwd.id }}-modal-label">{% trans "Stop sharing password" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% trans "Do you really want to stop sharing this password?" %}<br>
+                    {% trans "Users with whom it has been shared will no longer have access to it, but they may have already copied its value." %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{% trans "No, take me back!" %}</button>
+                    <a href="{% url "store_delete_sharing_passwd" sharing_passwd.uuid %}" class="btn btn-danger">{% trans "Yes, stop sharing" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}

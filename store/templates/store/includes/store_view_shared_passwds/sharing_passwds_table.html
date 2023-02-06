@@ -1,0 +1,39 @@
+{% load i18n %}
+
+<h4>{% trans "Sharing with other users" %}</h4>
+<table class="table mb-5">
+    <thead>
+        <tr>
+            <th>{% trans "URL" %}</th>
+            <th>{% trans "Identifiers" %}</th>
+            <th>{% trans "Sharing with" %}</th>
+            <th>{% trans "Options" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for sharing_passwd in sharing_passwds %}
+        <tr>
+            <td>{% if sharing_passwd.passwd.website %}<a href="{{ sharing_passwd.passwd.url }}">{{ sharing_passwd.passwd.url }}</a>{% else %}{{ sharing_passwd.passwd.url }}{% endif %}</td>
+            <td>
+                {% for identifier in sharing_passwd.passwd.identifier_set.all %}
+                    {{ identifier.key }}: {{ identifier.value }}<br>
+                {% endfor %}
+            </td>
+            <td>{{ sharing_passwd.customer_email }}</td>
+            <td>
+                <div class="dropdown text-center">
+                    <a href="javascript:" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa fa-list-dots"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url "store_update_passwd" sharing_passwd.passwd.uuid %}">{% trans "Manage" %}</a></li>
+                        <li>
+                            <a class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#delete-sharing-passwd-{{ sharing_passwd.id }}-modal" href="#">{% trans "Stop sharing" %}</a>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

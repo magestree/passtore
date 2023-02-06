@@ -1,0 +1,10 @@
+{% load i18n %}
+
+<form class="py-3" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <label class="form-label" for="input_file">{% trans "File" %}</label>
+    <input class="form-control" type="file" name="file" id="input_file" required>
+    <br>
+    <input type="hidden" name="load_passwds" id="input_load_passwds" value="">
+    <button class="btn btn-primary" type="submit">{% trans "Load passwords" %}</button>
+</form>

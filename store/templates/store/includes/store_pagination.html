@@ -1,0 +1,29 @@
+{% load i18n %}
+    <nav aria-label="Passwd pagination">
+        <ul class="pagination mt-4">{% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page=1" title="First">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" title="Previous">
+                    <span aria-hidden="true">&lsaquo;</span>
+                </a>
+            </li>{% endif %}{% if pages|length > 1 %}{% for page in pages %}
+            <li class="page-item"><a class="page-link {% if page == page_obj.number %}active{% endif %}" href="?page={{ page }}">{{ page }}</a></li>{% endfor %}{% endif %}{% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" title="Next">
+                    <span aria-hidden="true">&rsaquo;</span>
+                </a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" title="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>{% endif %}
+        </ul>
+    </nav>
+    <small>
+        {% trans 'Showing' %} {{ page_obj.object_list|length }} {% trans 'of' %} {{ paginator.count }}
+    </small>

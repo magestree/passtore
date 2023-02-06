@@ -1,0 +1,14 @@
+{% load i18n %}
+
+<form class="py-3" method="post">
+    {% csrf_token %}
+    <div class="row g-3 align-items-center">
+        <div class="col-auto">
+            <input class="form-control" type="text" name="name" id="input_name" {% if name %}value="{{ name }}"{% endif %} placeholder="{% trans "Name" %}">
+        </div>
+        <div class="col-auto margin-auto">
+            <input type="hidden" name="filter_containers" id="input_filter_containers">
+            <button class="btn btn-primary" type="submit">{% trans "Buscar" %}</button>
+        </div>
+    </div>
+</form>

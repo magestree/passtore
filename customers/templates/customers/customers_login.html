@@ -1,0 +1,25 @@
+{% extends 'store/store_base.html' %}
+{% block tab_title %}Log in{% endblock tab_title %}
+{% block content %}
+    <form class="px-4 py-3" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="input_email" class="form-label">Email address</label>
+            <input type="email" class="form-control" name="email" id="input_email" placeholder="email@example.com" required>
+        </div>
+        <div class="mb-3">
+            <label for="input_password" class="form-label">Password</label>
+            <input type="password" class="form-control" name="password" id="input_password" placeholder="Password" required>
+        </div>
+        <div class="mb-3">
+            <label for="input_master_key" class="form-label">PIN seguridad</label>
+            <input type="number" class="form-control" step="1" min="100000" max="999999" name="master_key" id="input_master_key" required placeholder="Master Key">
+        </div>
+        <button type="submit" class="btn btn-primary">Entrar</button>
+        <a class="btn" href="{% url 'customers_register' %}">Registrarse</a>
+        <a class="btn" href="{% url 'customers_forgot_passwd' %}">Olvido Password?</a>
+        <hr>
+        <p>Testing rollback</p>
+    </form>
+
+{% endblock content %}

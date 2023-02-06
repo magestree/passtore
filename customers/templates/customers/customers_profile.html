@@ -1,0 +1,40 @@
+{% extends 'store/store_base.html' %}
+{% block tab_title %}Profile{% endblock tab_title %}
+{% block content %}
+    <form class="px-4 py-3" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+        <label class="form-label" for="input_email">Email</label>
+        <input type="email" class="form-control" name="email" id="input_email" value="{{ email }}" required>
+        </div>
+
+        <input type="hidden" name="update_customer_data" value="">
+        <button type="submit" class="btn btn-primary">Actualizar datos</button>
+    </form>
+    <hr>
+    <form class="px-4 py-3" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+        <label class="form-label" for="input_current_password">Password actual</label>
+        <input type="password" class="form-control" name="current_password" id="input_current_password" required>
+        </div>
+        <div class="mb-3">
+        <label class="form-label" for="input_new_password">Nuevo password</label>
+        <input type="password" class="form-control" name="new_password" id="input_new_password" required>
+        </div>
+        <input type="hidden" name="update_password" value="">
+        <button type="submit" class="btn btn-primary">Cambiar contraseña</button>
+    </form>
+    <hr>
+    <form class="px-4 py-3" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label" for="input_master_key">Nuevo PIN</label>
+            <input type="number" class="form-control" max="999999" min="100000" name="master_key" id="input_master_key">
+        </div>
+
+        <input type="hidden" name="update_master_key" value="">
+        <button type="submit" class="btn btn-primary">Cambiar PIN de seguridad</button>
+    </form>
+
+{% endblock content %}

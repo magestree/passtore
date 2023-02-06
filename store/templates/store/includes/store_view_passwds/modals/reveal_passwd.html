@@ -1,0 +1,20 @@
+{% load i18n %}
+{% for passwd in page_obj %}
+    <div class="modal fade" id="reveal-passwd-{{ passwd.uuid }}-modal" tabindex="-1" aria-labelledby="reveal-passwd-{{ passwd.uuid }}-modal-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reveal-passwd-{{ passwd.uuid }}-modal-label">{% trans "Reveal password" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="{{ passwd.uuid }}"><span id="_{{ passwd.uuid }}-value"></span></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="copy-passwd btn" id="{{ passwd.uuid }}-copy-button" onclick="copy_passwd_after_reveal('{{ passwd.uuid }}')">{% trans "Copy" %}</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{% trans "Ok" %}</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}

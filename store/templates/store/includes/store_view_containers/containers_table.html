@@ -1,0 +1,18 @@
+{% load i18n %}
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>{% trans "Name" %}</th>
+        <th>{% trans "Options" %}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for container in containers %}
+        <tr>
+            <td>{{ container.name }}</td>
+            <td><a href="{% url 'store_update_container' container.uuid %}">{% trans "Details" %}</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

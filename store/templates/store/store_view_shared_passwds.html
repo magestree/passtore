@@ -1,0 +1,52 @@
+{% extends 'store/store_base.html' %}
+{% load i18n %}
+{% block tab_title %}{% trans "View shared passwords" %}{% endblock tab_title %}
+{% block content %}
+    <!--begin::Message-->
+    {% include 'store/includes/store_message.html' %}
+    <!--end::Message-->
+
+    <!--begin::Table-->
+    {% include "store/includes/store_view_shared_passwds/sharing_passwds_table.html" %}
+    {% include "store/includes/store_view_shared_passwds/shared_passwds_table.html" %}
+    <!--end::Table-->
+
+    <!--begin::Modals-->
+    {% include "store/includes/store_view_shared_passwds/modals/reveal_shared_passwd.html" %}
+    {% include "store/includes/store_view_shared_passwds/modals/delete_shared_passwd.html" %}
+    {% include "store/includes/store_view_shared_passwds/modals/delete_sharing_passwd.html" %}
+    {% include "store/includes/store_view_shared_passwds/modals/accept_shared_passwd.html" %}
+    <!--end::Modals-->
+{% endblock content %}
+
+{% block custom_script %}
+    <script type="text/javascript">
+        function reveal_passwd(uuid) {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'store_reveal_shared_passwd' %}",
+                data: {
+                    'uuid': uuid ,
+                    'master_key': {{ request.session.master_key }}
+                },
+                success: function (response) {
+                    if(response.value) {
+                        let seconds = 10
+                        // Show password
+                        $('#'+uuid+'-value').text(response.value);
+                        // Wait 5 seconds...
+                        setTimeout(function() {
+                            // then hide password
+                            $('#'+uuid+'-value').text("");
+                            // and close modal
+                            $('#reveal-shared-passwd-'+uuid+'-modal').modal('hide')
+                        }, seconds * 1000);
+                    }
+                },
+                error: function (response) {
+                    console.log(response);
+                }
+            });
+        }
+    </script>
+{% endblock custom_script %}

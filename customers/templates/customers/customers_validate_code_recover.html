@@ -1,0 +1,14 @@
+{% extends 'store/store_base.html' %}
+{% block tab_title %}Validate Code Recover{% endblock tab_title %}
+{% block content %}
+    <form class="px-4 py-3" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="input_code" class="form-label">Código de recuperación</label>
+            <input type="text" class="form-control" name="code" id="input_code" placeholder="1234">
+        </div>
+        <button type="submit" class="btn btn-primary">Validar</button>
+        <a class="btn" href="{% url 'customers_login' %}">Cancelar</a>
+    </form>
+
+{% endblock content %}

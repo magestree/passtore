@@ -1,0 +1,13 @@
+{% load i18n %}
+
+<form class="py-3" method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label" for="textarea_customer_emails">{% trans "Share password" %}</label><br>
+        <span class="small">{% trans "Share this password with one or more users indicating their emails, one email per row." %}</span>
+        <textarea required class="form-control" name="customer_emails" id="textarea_customer_emails" rows="3" style="min-width: 100%; max-width: 100%"></textarea>
+    </div>
+    <input type="hidden" id="input_share_passwd" name="share_passwd" value="">
+    <button class="btn btn-primary" type="submit">{% trans "Share Password" %}</button>
+    <hr>
+</form>

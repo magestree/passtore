@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Passtore {%  block tab_title %}{% endblock tab_title %}</title>
+</head>
+<body>
+    <ul>
+        {% if request.user.is_authenticated %}
+        <li><a href="{% url 'customers_logout' %}">Log out</a></li>
+        {% else %}
+        <li><a href="{% url 'customers_login' %}">Log in</a></li>
+        <li><a href="{% url 'customers_register' %}">Register</a></li>
+        {% endif %}
+    </ul>
+    {% block content %}
+    {% endblock content %}
+</body>
+</html>

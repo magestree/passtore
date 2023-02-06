@@ -1,0 +1,63 @@
+{% load i18n %}
+
+<form class="py-3" method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        {% if tmp_master_key %}
+        <div class="alert alert-success" role="alert">
+            {% trans "In order for the users to access the password you have shared for the first time, they will need to enter the following secret code:" %}<mark class="px-2 mx-2">{{ tmp_master_key }}</mark><br>
+            {% trans "This unique code is not recoverable, and will not be saved by us. We recommend that you delete it once you share it and make sure that no one else has access to it through you. Once the user uses it, it will no longer be valid." %}
+        </div>
+        {% endif %}
+        <label class="form-label" for="select_container_id">{% trans "Container" %}</label>
+        <select class="form-control" name="container_id" id="select_container_id">
+            <option value="">{% trans "Select an option" %}</option>
+            {% for container in containers %}
+                <option value="{{ container.id }}" {% if container == passwd.container %}selected{% endif %}>
+                    {{ container.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="input_name">{% trans "Name" %}</label>
+        <input class="form-control" type="text" name="name" id="input_name" {% if passwd.name %}value="{{ passwd.name }}"{% endif %}>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="input_url">Url</label>
+        <input class="form-control" type="text" name="url" id="input_url" {% if passwd.url %}value="{{ passwd.url }}"{% endif %} required>
+    </div>
+
+    <label class="form-label">{% trans "Identifiers" %}</label>
+
+    {% for identifier in identifiers %}
+        <div class="row mb-3">
+            <div class="col">
+                <input class="form-control" type="text" name="identifier_key_{{ template_prefix_id }}{{ identifier.id }}" placeholder="{% trans "Name" %}" value="{{ identifier.key }}">
+            </div>
+            <div class="col">
+                <input class="form-control" type="text" name="identifier_value_{{ template_prefix_id }}{{ identifier.id }}" placeholder="{% trans "Value" %}" value="{{ identifier.value }}">
+            </div>
+            <div class="col">
+                <button class="btn btn-danger delete-row" type="button">{% trans "Delete" %}</button>
+            </div>
+        </div>
+    {% endfor %}
+
+    <div id="newinput"></div>
+    <a href="javascript:" id="rowAdder">{% trans "New identifier" %}</a>
+
+    <div class="mb-3 mt-3">
+        <label class="form-label" for="input_value">{% trans "Password" %}</label>
+        <input class="form-control" type="text" name="value" id="input_value" value="{{ value }}" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="textarea_notes">{% trans "Notes" %}</label>
+        <textarea class="form-control" name="notes" id="textarea_notes">{% if passwd.notes %}{{ passwd.notes }}{% endif %}</textarea>
+    </div>
+
+    <input type="hidden" id="input_update_passwd" name="update_passwd" value="">
+    <button class="btn btn-primary" type="submit">{% trans "Update Password" %}</button>
+
+    <hr>
+</form>

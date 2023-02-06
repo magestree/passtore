@@ -1,0 +1,25 @@
+{% extends 'store/store_base.html' %}
+{% load i18n %}
+{% block tab_title %}{% trans "Manage Password" %}{% endblock tab_title %}
+{% block content %}
+    <!--begin::Message-->
+    {% include 'store/includes/store_message.html' %}
+    <!--end::Message-->
+
+    <!--begin::Forms-->
+    {% include "store/includes/store_update_passwd/update_passwd_form.html" %}
+    {% include "store/includes/store_update_passwd/share_passwd_form.html" %}
+    <!--end::Forms-->
+
+    <button type="button" class="btn btn-danger mt-2" data-bs-toggle="modal" data-bs-target="#delete-passwd-modal">
+        {% trans "Delete password" %}
+    </button>
+
+    <!-- Modals -->
+    {% include "store/includes/store_update_passwd/modals/delete_passwd.html" %}
+    <!-- End modals -->
+{% endblock content %}
+
+{% block custom_script %}
+    {% include 'store/includes/store_identifiers_rows.html' %}
+{% endblock custom_script %}

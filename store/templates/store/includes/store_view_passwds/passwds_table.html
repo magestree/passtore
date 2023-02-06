@@ -1,0 +1,61 @@
+{% load i18n %}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>{% trans "URL" %}</th>
+            <th>{% trans "Identifiers" %}</th>
+            <th>{% trans "Options" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for passwd in page_obj %}
+        <tr>
+            <td>{% if passwd.website %}<a href="{{ passwd.url }}" target="_blank">{{ passwd.url }}</a>{% else %}{{ passwd.url }}{% endif %}</td>
+            <td>
+                {% for identifier in passwd.identifier_set.all %}
+                    {{ identifier.key }}: {{ identifier.value }}<br>
+                {% endfor %}
+            </td>
+            <td>
+                <div class="d-grid gap-3 d-md-block">
+                    <a class="btn btn-outline-success btn-sm"
+                       href="javascript:"
+                       id="{{ passwd.uuid }}-copy-without-reveal"
+                       onclick="copy_password_without_reveal('{{ passwd.uuid }}');"
+                       title="{% trans "Copy to clipboard" %}">
+                        <i class="fa fa-clipboard"></i>
+                    </a>
+
+                    <a class="btn btn-outline-primary btn-sm"
+                       href="javascript:"
+                       id="{{ passwd.uuid }}-show"
+                       onclick="reveal_passwd('{{ passwd.uuid }}');"
+                       data-bs-toggle="modal"
+                       data-bs-target="#reveal-passwd-{{ passwd.uuid }}-modal"
+                       title="{% trans "Reveal password" %}">
+                        <i class="fa fa-eye"></i>
+                    </a>
+
+                    <a class="btn btn-outline-secondary btn-sm"
+                       href="{% url "store_update_passwd" passwd.uuid %}"
+                       id="{{ passwd.uuid }}-manage"
+                       title="{% trans "Manage password" %}">
+                        <i class="fa fa-gear"></i>
+                    </a>
+
+                    <a class="btn btn-outline-danger btn-sm"
+                       href="javascript:"
+                       id="{{ passwd.uuid }}-delete"
+                       onclick="reveal_passwd('{{ passwd.uuid }}');"
+                       data-bs-toggle="modal"
+                       data-bs-target="#delete-passwd-{{ passwd.uuid }}-modal"
+                       title="{% trans "Delete password" %}">
+                        <i class="fa fa-trash"></i>
+                    </a>
+                </div>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

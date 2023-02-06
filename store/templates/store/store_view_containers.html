@@ -1,0 +1,16 @@
+{% extends 'store/store_base.html' %}
+{% load i18n %}
+{% block tab_title %}{% trans "View containers" %}{% endblock tab_title %}
+{% block content %}
+    <!--begin::Message-->
+    {% include 'store/includes/store_message.html' %}
+    <!--end::Message-->
+
+    <!-- Filter form -->
+    {% include "store/includes/store_view_containers/filter_form.html" %}
+    <!-- End filter form -->
+
+    <!-- Filter form -->
+    {% include "store/includes/store_view_containers/containers_table.html" %}
+    <!-- End filter form -->
+{% endblock content %}

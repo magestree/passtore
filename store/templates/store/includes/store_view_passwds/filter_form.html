@@ -1,0 +1,27 @@
+{% load i18n %}
+
+<form class="py-3" method="post">
+    {% csrf_token %}
+    <div class="row g-3 align-items-center">
+        <div class="col-auto">
+            <select class="form-control" name="container_id" id="select_container">
+                <option value="">{% trans "All containers" %}</option>
+                {% for container in containers %}
+                    <option value="{{ container.id }}">
+                        {{ container.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-auto">
+            <input class="form-control" type="text" name="url" id="input_url" {% if url %}value="{{ url }}"{% endif %} placeholder="{% trans "URL" %}">
+        </div>
+        <div class="col-auto">
+            <input class="form-control" type="text" name="identifier" id="input_identifier" {% if identifier %}value="{{ identifier }}"{% endif %} placeholder="{% trans "Identificador" %}">
+        </div>
+        <div class="col-auto margin-auto">
+            <input type="hidden" name="filter_passwds" id="input_filter_passwds">
+            <button class="btn btn-primary" type="submit"><i class="fa fa-search mr-3"></i> {% trans "Buscar" %}</button>
+        </div>
+    </div>
+</form>

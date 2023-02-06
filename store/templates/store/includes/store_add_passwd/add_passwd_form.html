@@ -1,0 +1,55 @@
+{% load i18n %}
+
+<form class="py-3" method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label" for="select_container">{% trans "Container" %}</label>
+        <select class="form-control" name="container_id" id="select_container">
+            <option value="">{% trans "Select an option" %}</option>
+            {% for container in containers %}
+                <option value="{{ container.id }}">
+                    {{ container.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="input_name">{% trans "Name" %}</label>
+        <input class="form-control" type="text" name="name" id="input_name">
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="input_url">Url</label>
+        <input class="form-control" type="text" name="url" id="input_url" required>
+    </div>
+
+    <label class="form-label">{% trans "Identifiers" %}</label>
+
+    <div class="row mb-3">
+        <div class="col">
+            <input class="form-control" type="text" name="identifier_key_0" placeholder="{% trans "Name" %}">
+        </div>
+        <div class="col">
+            <input class="form-control" type="text" name="identifier_value_0" placeholder="{% trans "Value" %}">
+        </div>
+        <div class="col">
+            <button class="btn btn-danger delete-row" type="button">{% trans "Delete" %}</button>
+        </div>
+    </div>
+
+    <div id="newinput"></div>
+    <a href="javascript:" id="rowAdder">{% trans "New identifier" %}</a>
+
+    <div class="mb-3 mt-3">
+        <label class="form-label" for="input_value">{% trans "Password" %}</label>
+        <input class="form-control" type="text" name="value" id="input_value" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="textarea_notes">{% trans "Notes" %}</label>
+        <textarea class="form-control" name="notes" id="textarea_notes"></textarea>
+    </div>
+
+    <input type="hidden" id="input_add_passwd" name="add_passwd" value="">
+    <button class="btn btn-primary" type="submit">{% trans "Add Password" %}</button>
+    <a class="btn" href="{% url 'store_view_passwds' %}">{% trans "Cancel" %}</a>
+</form>
+<hr>

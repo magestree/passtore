@@ -1,0 +1,12 @@
+{% load i18n %}
+
+<form class="py-3" method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label" for="input_name">{% trans "Name" %}</label>
+        <input class="form-control" type="text" name="name" id="input_name" required>
+    </div>
+
+    <input type="hidden" id="input_add_container" name="add_container" value="">
+    <button class="btn btn-primary" type="submit">{% trans "Add Container" %}</button>
+</form>

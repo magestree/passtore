@@ -1,0 +1,21 @@
+{% load i18n %}
+{% for shared_passwd in shared_passwds %}
+    <div class="modal fade" id="delete-shared-passwd-{{ shared_passwd.id }}-modal" tabindex="-1" aria-labelledby="delete-shared-passwd-{{ shared_passwd.id }}-modal-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="delete-shared-passwd-{{ shared_passwd.id }}-modal-label">{% trans "Delete" %}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% trans "Do you wan to continue with this password deletion? This action is not reversible!" %}<br>
+                    {% trans "This actions will not affect the original password, jusy will delete your access to see it." %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{% trans "No, take me back!" %}</button>
+                    <a href="{% url "store_delete_shared_passwd" shared_passwd.uuid %}" class="btn btn-danger">{% trans "Yes, delete password" %}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endfor %}

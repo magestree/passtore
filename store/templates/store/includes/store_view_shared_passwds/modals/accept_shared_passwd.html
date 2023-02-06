@@ -1,0 +1,32 @@
+{% load i18n %}
+
+{% for shared_passwd in shared_passwds %}
+    <form method="post">
+    {% csrf_token %}
+        <div class="modal fade" id="accept-shared-passwd-{{ shared_passwd.uuid }}-modal" tabindex="-1" aria-labelledby="accept-shared-passwd-{{ shared_passwd.uuid }}-modal-label" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="accept-shared-passwd-{{ shared_passwd.uuid }}-modal-label">{% trans "Accept shared password" %}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        {% trans "You should indicate the 'secret code' given by the user who shared this password with you, before you can access it." %}<br>
+                        {% trans "This is necessary only once and reason is because we can then reencrypt the password using your own master_key instead this temporary secret code, improving your security." %}
+                        <br><br>
+                        <div class="mb-3">
+                            <label class="form-label" for="input_tmp_master_key_{{ shared_passwd.uuid }}">{% trans "Secret code" %}</label>
+                            <input class="form-control" type="text" name="temp_master_key" id="input_tmp_master_key_{{ shared_passwd.uuid }}" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" id="input_accept_shared_passwd_{{ shared_passwd.uuid }}" name="accept_shared_passwd" value="">
+                        <input type="hidden" id="input_shared_passwd_uuid_{{ shared_passwd.uuid }}" name="shared_passwd_uuid" value="{{ shared_passwd.uuid }}">
+                        <button type="button" class="btn" data-bs-dismiss="modal">{% trans "Cancel" %}</button>
+                        <button class="btn btn-primary" type="submit">{% trans "Validate" %}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endfor %}
