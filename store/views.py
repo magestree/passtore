@@ -86,6 +86,8 @@ def store_reveal_shared_passwd(request):
 def store_add_passwd(request):
     # Authentication
     customer, master_key = get_session_customer(request)
+    if not customer or not master_key:
+        return redirect('customers_logout')
 
     # message
     message, class_alert = check_session_message(request)
@@ -168,6 +170,8 @@ def store_add_passwd(request):
 def store_view_passwds(request):
     # Authentication
     customer, master_key = get_session_customer(request)
+    if not customer or not master_key:
+        return redirect('customers_logout')
 
     # message
     message, class_alert = check_session_message(request)
@@ -223,6 +227,8 @@ def store_view_passwds(request):
 def store_view_shared_passwds(request):
     # Authentication
     customer, master_key = get_session_customer(request)
+    if not customer or not master_key:
+        return redirect('customers_logout')
 
     # message
     message, class_alert = check_session_message(request)
@@ -270,6 +276,8 @@ def store_view_shared_passwds(request):
 def store_view_containers(request):
     # Authentication
     customer, master_key = get_session_customer(request)
+    if not customer or not master_key:
+        return redirect('customers_logout')
 
     # message
     message, class_alert = check_session_message(request)
@@ -299,6 +307,9 @@ def store_view_containers(request):
 def store_update_container(request, container_uuid):
     # Authentication
     customer, master_key = get_session_customer(request)
+    if not customer or not master_key:
+        return redirect('customers_logout')
+
     container = get_object_or_404(Container, customer=customer, uuid=container_uuid)
 
     # message
@@ -329,6 +340,9 @@ def store_update_container(request, container_uuid):
 def store_update_passwd(request, passwd_uuid):
     # Authentication
     customer, master_key = get_session_customer(request)
+    if not customer or not master_key:
+        return redirect('customers_logout')
+
     passwd = get_object_or_404(Passwd, customer=customer, uuid=passwd_uuid)
     if not passwd.available:
         return redirect("store_view_passwds")
@@ -432,6 +446,9 @@ def store_update_passwd(request, passwd_uuid):
 def store_delete_passwd(request, passwd_uuid):
     # Authentication
     customer, master_key = get_session_customer(request)
+    if not customer or not master_key:
+        return redirect('customers_logout')
+
     passwd = get_object_or_404(Passwd, customer=customer, uuid=passwd_uuid)
 
     # Data processing
@@ -445,6 +462,8 @@ def store_delete_passwd(request, passwd_uuid):
 def store_copy_shared_passwd(request, shared_passwd_uuid):
     # Authentication
     customer, master_key = get_session_customer(request)
+    if not customer or not master_key:
+        return redirect('customers_logout')
 
     shared_passwd = get_object_or_404(
         SharedPasswd, customer_email=customer.email, uuid=shared_passwd_uuid, accepted=True
@@ -477,6 +496,8 @@ def store_copy_shared_passwd(request, shared_passwd_uuid):
 def store_delete_shared_passwd(request, shared_passwd_uuid):
     # Authentication
     customer, master_key = get_session_customer(request)
+    if not customer or not master_key:
+        return redirect('customers_logout')
 
     shared_passwd = get_object_or_404(SharedPasswd, customer_email=customer.email, uuid=shared_passwd_uuid)
     # Data processing
@@ -490,6 +511,9 @@ def store_delete_shared_passwd(request, shared_passwd_uuid):
 def store_delete_sharing_passwd(request, sharing_passwd_uuid):
     # Authentication
     customer, master_key = get_session_customer(request)
+    if not customer or not master_key:
+        return redirect('customers_logout')
+
     sharing_passwd = get_object_or_404(SharedPasswd, passwd__customer=customer, uuid=sharing_passwd_uuid)
     # Data processing
     sharing_passwd.delete()
@@ -502,6 +526,9 @@ def store_delete_sharing_passwd(request, sharing_passwd_uuid):
 def store_delete_container(request, container_uuid):
     # Authentication
     customer, master_key = get_session_customer(request)
+    if not customer or not master_key:
+        return redirect('customers_logout')
+
     container = get_object_or_404(Container, customer=customer, uuid=container_uuid)
     # Data processing
     container.delete()
@@ -514,6 +541,8 @@ def store_delete_container(request, container_uuid):
 def store_add_container(request):
     # Authentication
     customer, master_key = get_session_customer(request)
+    if not customer or not master_key:
+        return redirect('customers_logout')
 
     # message
     message, class_alert = check_session_message(request)
