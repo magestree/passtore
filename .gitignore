@@ -3,4 +3,5 @@
 *.xml
 env.py
 .idea/
+.python-version
 /venv/
