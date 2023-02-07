@@ -20,11 +20,11 @@ def get_session_customer(request):
         master_key = request.session.get('master_key')
         customer = request.user.customer
         if not customer.validate_master_key(master_key):
-            return redirect('customers_logout')
+            return None, None
         return customer, master_key
     except Exception as e:
         logging.error(e)
-        return redirect('customers_logout')
+        return None, None
 
 
 def check_session_message(request):
@@ -42,6 +42,9 @@ def check_session_message(request):
 def customers_profile(request):
     # Authentication
     customer, master_key = get_session_customer(request)
+    if not customer or not master_key:
+        return redirect('customers_logout')
+
     message, class_alert = check_session_message(request)
     if request.method == 'POST':
         request_post = request.POST
