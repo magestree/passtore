@@ -1,7 +1,7 @@
 import random
 
 import pytest
-from django.test import TestCase, TransactionTestCase
+from django.test import TestCase
 from django.utils.crypto import get_random_string
 import lipsum
 
@@ -23,13 +23,10 @@ def generate_test_data():
     return test_data
 
 
-# class PasswdTest(TestCase):
-class PasswdTest(TransactionTestCase):
+class PasswdTest(TestCase):
     def setUp(self):
         self.test_data = generate_test_data()
         self.master_key = self.test_data["master_key"]
-
-        FernetKey.objects.create()
 
         # Create Customer
         customer = Customer(
@@ -56,7 +53,7 @@ class PasswdTest(TransactionTestCase):
 
     def test_decrypt_string_after_refresh_fernet(self):
         old_passwd_value = self.passwd.value
-        Passwd.refresh_fernet()
+        FernetKey.refresh_fernet()
         self.passwd.refresh_from_db()
         self.assertNotEqual(old_passwd_value, self.passwd.value)
         decrypted_passwd = decrypt_string(self.passwd.value, self.master_key)
