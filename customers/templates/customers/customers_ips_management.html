@@ -1,0 +1,27 @@
+{% extends 'store/store_base.html' %}
+{% load i18n %}
+{% block tab_title %}{% trans "IPs management" %}{% endblock tab_title %}
+{% block content %}
+    {% include "store/includes/store_message.html" %}
+    <form class="py-3" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+        <label class="form-label" for="input_name">{% trans "Name" %}</label>
+        <input type="text" class="form-control" name="name" id="input_name" value="">
+        </div>
+        <div class="mb-3">
+        <label class="form-label" for="textarea_ip_range">{% trans "IP/range" %}</label>
+        <textarea class="form-control" name="ip_range" id="textarea_ip_range"></textarea>
+        </div>
+
+        <input type="hidden" name="add_allowed_ip" value="">
+        <button type="submit" class="btn btn-primary">{% trans "Add allowed IPs" %}</button>
+    </form>
+    <hr>
+    <p>{% trans "Current allowed IPs" %}</p>
+    {% for allowed_ip in allowed_ips %}
+        <div class="mb-3">
+        <p>{{ allowed_ip }}</p>
+        </div>
+    {% endfor %}
+{% endblock content %}
