@@ -179,6 +179,7 @@ def store_view_passwds(request):
     # Data definition
     containers = customer.container_set.order_by("name")
     container = None
+    name = None
     url = None
     identifier = None
     passwds = customer.passwd_set.prefetch_related("identifier_set").order_by("name", "website")
@@ -189,6 +190,9 @@ def store_view_passwds(request):
             container_id = request_post.get("container_id")
             if container_id:
                 container = containers.filter(id=container_id).first()
+            name = request_post.get("name")
+            if name:
+                passwds = passwds.filter(name__icontains=name)
             url = request_post.get("url")
             if url:
                 passwds = passwds.filter(url__icontains=url)
@@ -207,6 +211,7 @@ def store_view_passwds(request):
         "message": message,
         "class_alert": class_alert,
         # data
+        "name": name,
         "url": url,
         "identifier": identifier,
         "passwds": passwds,
@@ -218,7 +223,6 @@ def store_view_passwds(request):
         'pages': pages,
 
         "numbers": [1, 2, 3, 4],
-        "test_uuid": "f42a22bb-8c44-4313-a98f-e55654d60b27",
     }
     return render(request, "store/store_view_passwds.html", context)
 

@@ -6,8 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 # from django.utils.translation import ugettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
+from ipware import get_client_ip
 
-from customers.models import Customer, RecoverCode
+from customers.models import Customer, RecoverCode, AllowedIP
 from passtore.settings import LOGIN_URL
 from store.models import Passwd
 from support.emails import send_email
@@ -75,6 +76,38 @@ def customers_profile(request):
 
 
 @login_required(login_url=LOGIN_URL)
+def customers_ips_management(request):
+    # Authentication
+    customer, master_key = get_session_customer(request)
+    if not customer or not master_key:
+        return redirect("customers_logout")
+
+    message, class_alert = check_session_message(request)
+    if request.method == "POST":
+        request_post = request.POST
+        if "add_allowed_ip" in request_post:
+            name = request_post.get("name")
+            ip_range = request_post.get("ip_range")
+            AllowedIP.objects.create(
+                customer=customer,
+                name=name,
+                ip_range=ip_range,
+            )
+            message = "Allowed IP has been correctly created"
+            class_alert = SUCCESS_MESSAGE
+
+    allowed_ips = customer.allowedip_set.all()
+
+    context = {
+        "message": message,
+        "class_alert": class_alert,
+        "customer": customer,
+        "allowed_ips": allowed_ips,
+    }
+    return render(request, 'customers/customers_ips_management.html', context)
+
+
+@login_required(login_url=LOGIN_URL)
 def customers_logout(request):
     logout(request)
     return redirect('customers_login')
@@ -87,6 +120,7 @@ def customers_login(request):
     message, class_alert = check_session_message(request)
     if request.method == 'POST':
         request_post = request.POST
+        client_ip, is_routable = get_client_ip(request)
         email = request_post.get('email')
         password = request_post.get('password')
         master_key = request_post.get('master_key')
@@ -94,13 +128,17 @@ def customers_login(request):
         if customer:
             if authenticate(username=customer.username, password=password):
                 if customer.validate_master_key(master_key=master_key):
-                    login(request, customer)
-                    request.session['master_key'] = master_key if master_key else redirect('customers_logout')
-                    # Verifying if there is next instruction in request GET
-                    if 'next' not in request.GET:
-                        return redirect('store_view_passwds')
+                    if customer.validate_ip(client_ip):
+                        login(request, customer)
+                        request.session['master_key'] = master_key if master_key else redirect('customers_logout')
+                        # Verifying if there is next instruction in request GET
+                        if 'next' not in request.GET:
+                            return redirect('store_view_passwds')
+                        else:
+                            return redirect(request.GET.get('next'))
                     else:
-                        return redirect(request.GET.get('next'))
+                        message = "Access denied from current IP"
+                        class_alert = DANGER_MESSAGE
                 else:
                     message = 'Wrong Master Key'
                     class_alert = DANGER_MESSAGE

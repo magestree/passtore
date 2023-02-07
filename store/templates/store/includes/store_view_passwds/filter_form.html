@@ -14,6 +14,10 @@
             </select>
         </div>
         <div class="col-auto">
+            <input class="form-control" type="text" name="name" id="input_name" {% if name %}value="{{ name }}"{% endif %} placeholder="{% trans "Name" %}">
+        </div>
+
+        <div class="col-auto">
             <input class="form-control" type="text" name="url" id="input_url" {% if url %}value="{{ url }}"{% endif %} placeholder="{% trans "URL" %}">
         </div>
         <div class="col-auto">

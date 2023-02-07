@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.utils.crypto import get_random_string
 from django_cryptography.fields import encrypt
 from django.utils.translation import ugettext_lazy as _
+from ipparser import ipparser
 
 from passtore.settings import TESTING
 from support.functions import encrypt_string, decrypt_string, reencrypt_string, get_expire_time_code
@@ -20,6 +21,18 @@ class Customer(User):
     test_passwd = encrypt(models.TextField('Test passwd', blank=True, null=True))
     secret_key = models.CharField(max_length=88, db_index=True, blank=True, null=True)
     uuid = models.CharField('UUID', max_length=36, null=True, blank=True)
+
+    def validate_ip(self, ip):
+        allowed_ips = self.get_allowed_ips()
+        if not allowed_ips:
+            return True
+        return ip in allowed_ips
+
+    def get_allowed_ips(self):
+        allowed_ips = []
+        for allowed_ip in self.allowedip_set.all():
+            allowed_ips.extend(allowed_ip.get_ips())
+        return list(set(allowed_ips))
 
     def get_master_key(self):
         # This only works for numbers between 0 and 999999
@@ -181,3 +194,15 @@ class Permission(models.Model):
 class ApiKeyPermission(models.Model):
     api_key = models.ForeignKey(ApiKey, on_delete=models.CASCADE)
     permission = models.ForeignKey(Permission, on_delete=models.CASCADE)
+
+
+class AllowedIP(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    name = models.CharField(max_length=32, blank=True, null=True)
+    ip_range = models.TextField()
+
+    def get_ips(self):
+        return ipparser(self.ip_range, resolve=True)
+
+    def __str__(self):
+        return self.ip_range
