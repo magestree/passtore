@@ -16,6 +16,20 @@ class FernetKey(models.Model):
     uuid = models.CharField("UUID", max_length=36, null=True, blank=True)
 
     @classmethod
+    def refresh_fernet(cls):
+        new_fernet_key = cls.objects.create()
+        for passwd in Passwd.objects.all():
+            new_value = fernet_reencrypt_string(passwd.value)
+            passwd.value = new_value
+            passwd.save()
+        customer_model = apps.get_model("customers", "Customer")
+        for customer in customer_model.objects.all():
+            new_value = fernet_reencrypt_string(customer.test_passwd)
+            customer.test_passwd = new_value
+            customer.save()
+        cls.objects.exclude(id=new_fernet_key.id).delete()
+
+    @classmethod
     def get_possible_fernet_keys(cls):
         """Return all possible fernet_keys, ensure that there are a maximum of two"""
         fernet_keys = list(cls.objects.order_by("-id").values_list("key", flat=True))
@@ -69,20 +83,6 @@ class Passwd(models.Model, FileReader):
         if website:
             return cls.objects.filter(website=website).values("")
         return None
-
-    @classmethod
-    def refresh_fernet(cls):
-        new_fernet_key = FernetKey.objects.create()
-        for passwd in cls.objects.all():
-            new_value = fernet_reencrypt_string(passwd.value)
-            passwd.value = new_value
-            passwd.save()
-        customer_model = apps.get_model("customers", "Customer")
-        for customer in customer_model.objects.all():
-            new_value = fernet_reencrypt_string(customer.test_passwd)
-            customer.test_passwd = new_value
-            customer.save()
-        FernetKey.objects.exclude(id=new_fernet_key.id).delete()
 
     def save(self, master_key=None, *args, **kwargs):
         self.website = urlparse(self.url).hostname
